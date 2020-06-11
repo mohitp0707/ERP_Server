@@ -1,0 +1,22 @@
+{
+  "name": "texttileserver",
+  "version": "1.0.0",
+  "description": "textile project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://mixins@bitbucket.org/mixins/textileserver.git"
+  },
+  "author": "mohit.patel",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/mixins/textileserver#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mssql": "^6.2.0"
+  }
+}
