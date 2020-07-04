@@ -1600,6 +1600,55 @@ app.get('/api/Purchase_Retrieve', function (req, res) {
 		})
 	})
 
+	app.post('/api/PurchaeInvoice_update', function (req, res){ 
+		var input=req.body;
+		var tvp_item = new sql.Table();
+		   tvp_item.columns.add('No', sql.Decimal(18, 4));
+		   tvp_item.columns.add('IM_ID', sql.VarChar(50));  
+		   tvp_item.columns.add('unit', sql.VarChar(50) ); 
+		   tvp_item.columns.add('qty', sql.Decimal(18,4));
+		   tvp_item.columns.add('rate', sql.Decimal(18,4));
+		   tvp_item.columns.add('NA', sql.Decimal(18,4));
+		   tvp_item.columns.add('taxID', sql.VarChar(50));
+		   tvp_item.columns.add('cgst', sql.Decimal(18,4));
+		   tvp_item.columns.add('sgst', sql.Decimal(18,4));
+		   tvp_item.columns.add('igst', sql.Decimal(18,4));
+		   tvp_item.columns.add('tax', sql.Decimal(18,4));
+		   tvp_item.columns.add('total', sql.Decimal(18,4));
+		for (var i = 0; i <input.particular.length; i++) {  
+			  tvp_item.rows.add(i+1,input.particular[i].IM_ID , input.particular[i].IM_UM,input.particular[i].quantity,input.particular[i].sellingPrice,input.particular[i].subTotal,input.particular[i].IM_TAX,input.particular[i].cgst,input.particular[i].sgst,input.particular[i].igst,input.particular[i].taxSubTotal,input.particular[i].amount);  
+		   }
+	   
+		var request = new sql.Request();
+			request.input('id', sql.VarChar(50), input.id)
+		  request.input('supp', sql.VarChar(50), input.partyId)
+		  request.input('date', sql.VarChar(50), input.generatedate)
+		  request.input('total', sql.Decimal(18, 4), input.amount)
+		  request.input('taxtot', sql.Decimal(18, 4), input.taxSubTotal)
+		  request.input('namt', sql.Decimal(18, 4), input.subTotal)
+		  request.input('Tsgst',sql.Decimal(18, 4), input.tsgst)
+		  request.input('Tcgst',sql.Decimal(18, 4), input.tcgst)
+		  request.input('co', sql.Int, CO)
+		  request.input('FY', sql.Int, FY)
+		  request.input('uid', sql.VarChar(50), UID)
+		  request.input('itmdetail', tvp_item)
+		  request.input('Tigst',sql.Decimal(18, 4), input.tigst)
+		  request.input('gsttype',sql.VarChar(100), input.taxGType)
+		  request.input('rmk',sql.VarChar(250), input.remark)
+		  request.input('warehouse',sql.VarChar(100), input.GR_WH)
+		  request.input('pinv',sql.VarChar(100), input.invNo)
+		  request.input('pchno',sql.VarChar(100), input.chalNo)
+		  request.input('roundoff',sql.VarChar(100), input.roundoff)
+		  request.input('woramt',sql.VarChar(100), input.woramt)
+		request.execute('dbo.Purchase_update', function (err, recordset) {
+		if (err){ console.log(err); }
+		else
+		{
+		res.send(recordset);
+		}
+		}); 
+	   });
+
 app.get('/api/Sales_ALL_Retrieve', function (req, res) {
         var request = new sql.Request();  
         request.query("select SI_ID,SI_SInvNo,dbo.getPartyName(SI_Supp,'"+CO+"') as supp,Convert(varchar(20),SI_Date,106) as dat,convert(decimal(18,2),SI_NA) as NA,convert(decimal(18,2),SI_TTax) as Tax, convert(decimal(18,2),SI_Total) as TA from SIC_ALL where SI_Co='"+CO+"' and SI_FY='"+FY+"' and (SI_IsDel is null or SI_IsDel='') order by convert(int,substring(SI_ID,3,len(SI_ID))) desc", function (err, recordset) {
@@ -1704,6 +1753,59 @@ app.post('/api/SI_ALL_Insert', function (req, res){
  }
  }); 
 });
+
+
+app.post('/api/SI_ALL_update', function (req, res){ 
+	var input=req.body;
+
+	var tvp_item = new sql.Table();
+	   tvp_item.columns.add('No', sql.Decimal(18, 4));
+	   tvp_item.columns.add('IM_ID', sql.VarChar(50));  
+	   tvp_item.columns.add('unit', sql.VarChar(50) ); 
+	   tvp_item.columns.add('qty', sql.Decimal(18,4));
+	   tvp_item.columns.add('rate', sql.Decimal(18,4));
+	   tvp_item.columns.add('NA', sql.Decimal(18,4));
+	   tvp_item.columns.add('taxID', sql.VarChar(50));
+	   tvp_item.columns.add('cgst', sql.Decimal(18,4));
+	   tvp_item.columns.add('sgst', sql.Decimal(18,4));
+	   tvp_item.columns.add('igst', sql.Decimal(18,4));
+	   tvp_item.columns.add('tax', sql.Decimal(18,4));
+	   tvp_item.columns.add('total', sql.Decimal(18,4));
+	for (var i = 0; i <input.particular.length; i++) {  
+		  tvp_item.rows.add(i+1,input.particular[i].IM_ID , input.particular[i].IM_UM,input.particular[i].quantity,input.particular[i].sellingPrice,input.particular[i].subTotal,input.particular[i].IM_TAX,input.particular[i].cgst,input.particular[i].sgst,input.particular[i].igst,input.particular[i].taxSubTotal,input.particular[i].amount);  
+	   }
+   	console.log(tvp_item);
+	var request = new sql.Request();
+		request.input('id', sql.VarChar(50), input.id)
+	  request.input('supp', sql.VarChar(50), input.partyId)
+	  request.input('date', sql.VarChar(50), input.generatedate)
+	  request.input('total', sql.Decimal(18, 4), input.amount)
+	  request.input('taxtot', sql.Decimal(18, 4), input.taxSubTotal)
+	  request.input('namt', sql.Decimal(18, 4), input.subTotal)
+	  request.input('Tsgst',sql.Decimal(18, 4), input.tsgst)
+	  request.input('Tcgst',sql.Decimal(18, 4), input.tcgst)
+	  request.input('co', sql.Int, CO)
+	  request.input('FY', sql.Int, FY)
+	  request.input('uid', sql.VarChar(50), UID)
+	  request.input('itmdetail', tvp_item)
+	  request.input('Tigst',sql.Decimal(18, 4), input.tigst)
+	  request.input('gsttype',sql.VarChar(100), input.taxGType)
+	  request.input('rmk',sql.VarChar(250), input.remark)
+	  request.input('warehouse',sql.VarChar(100), input.GR_WH)
+	  request.input('SInv',sql.VarChar(100), input.invNo)
+	  request.input('pchno',sql.VarChar(100), input.chalNo)
+	  request.input('roundoff',sql.VarChar(100), input.roundoff)
+	  request.input('woramt',sql.VarChar(100), input.woramt)
+	  request.input('transmode',sql.VarChar(100), input.transmode)
+	  request.input('vehicleno',sql.VarChar(100), input.vehicleno)
+	request.execute('dbo.SI_ALL_update', function (err, recordset) {
+	if (err){ console.log(err); }
+	else
+	{
+	res.send(recordset);
+	}
+	}); 
+   });
 
 app.get('/api/retrieve_SI_ALL/:id', function (req, res) {
 		var id=req.params.id;
